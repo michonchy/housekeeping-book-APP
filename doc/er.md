@@ -10,6 +10,27 @@ categories {
     INTEGER id
     TEXT name
 }
+
+spendings {
+    INTEGER id
+    INTEGER amount
+    TEXT date
+    INTEGER user_id
+    INTEGER category_id
+}
+spendings ||--o{ users : has
+spendings ||--o{ categories : has
+
+incomes {
+    INTEGER id
+    INTEGER amount
+    TEXT date
+    INTEGER user_id
+    INTEGER category_id
+}
+incomes ||--o{ users : has
+incomes ||--o{ categories : has
+
 ```
 
 ```sql
