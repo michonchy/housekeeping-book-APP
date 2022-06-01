@@ -5,6 +5,11 @@ users {
     INTEGER id
     TEXT name
 }
+
+categories {
+    INTEGER id
+    TEXT name
+}
 ```
 
 ```sql
