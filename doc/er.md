@@ -18,8 +18,8 @@ spendings {
     INTEGER user_id
     INTEGER category_id
 }
-spendings ||--o{ users : has
-spendings ||--o{ categories : has
+spendings ||--|| users : has
+spendings ||--|| categories : has
 
 incomes {
     INTEGER id
@@ -28,9 +28,15 @@ incomes {
     INTEGER user_id
     INTEGER category_id
 }
-incomes ||--o{ users : has
-incomes ||--o{ categories : has
+incomes ||--|| users : has
+incomes ||--|| categories : has
 
+```
+
+```
+"||" -> 1
+"--" -> テーブルを繋げる線
+"o{" -> 0 or n
 ```
 
 ```sql
