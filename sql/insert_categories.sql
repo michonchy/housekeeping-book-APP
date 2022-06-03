@@ -1,9 +1,9 @@
 INSERT INTO categories VALUES(0, 'food');
-INSERT INTO categories VALUES(0, 'daily necessities');
-INSERT INTO categories VALUES(0, 'rent');
-INSERT INTO categories VALUES(0, 'water');
-INSERT INTO categories VALUES(0, 'gas');
-INSERT INTO categories VALUES(0, 'electricity');
-INSERT INTO categories VALUES(0, 'gasoline');
-INSERT INTO categories VALUES(0, 'leisure');
-INSERT INTO categories VALUES(0, 'saving');
+INSERT INTO categories VALUES(1, 'daily necessities');
+INSERT INTO categories VALUES(2, 'rent');
+INSERT INTO categories VALUES(3, 'water');
+INSERT INTO categories VALUES(4, 'gas');
+INSERT INTO categories VALUES(5, 'electricity');
+INSERT INTO categories VALUES(6, 'gasoline');
+INSERT INTO categories VALUES(7, 'leisure');
+INSERT INTO categories VALUES(8, 'saving');
