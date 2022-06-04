@@ -7,3 +7,4 @@ INSERT INTO categories VALUES(5, 'electricity');
 INSERT INTO categories VALUES(6, 'gasoline');
 INSERT INTO categories VALUES(7, 'leisure');
 INSERT INTO categories VALUES(8, 'saving');
+INSERT INTO categories VALUES(9, 'others');
