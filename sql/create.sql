@@ -1,3 +1,4 @@
 CREATE TABLE users(id INTEGER PRIMARY KEY,name TEXT);
 CREATE TABLE categories(id INTEGER PRIMARY KEY,name TEXT);
 CREATE TABLE spendings(id INTEGER PRIMARY KEY,amount INTEGER,date TEXT,user_id INTEGER,category_id INTEGER);
+CREATE TABLE incomes(id INTEGER PRIMARY KEY,amount INTEGER,date TEXT,user_id INTEGER,category_id INTEGER);
