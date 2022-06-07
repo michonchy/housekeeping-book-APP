@@ -1,0 +1,1 @@
+INSERT INTO spendings VALUES(0, 1000, '2022-06-07',0,1);
