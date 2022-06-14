@@ -27,9 +27,9 @@ class Spending(BaseEntity):
     amount = Column(Integer())
     date = Column(String())
     user_id: int = Column(ForeignKey("users.id"))
-    user: Mapped[User] = relationship("User", backref="spendings")
+    user: User = relationship("User", backref="spendings")
     category_id: int = Column(ForeignKey("categories.id"))
-    category: Mapped[Category] = relationship("Category", backref="spendings")
+    category: Category = relationship("Category", backref="spendings")
 
 
 class Income(BaseEntity):
@@ -38,6 +38,6 @@ class Income(BaseEntity):
     amount = Column(Integer())
     date = Column(String())
     user_id: int = Column(ForeignKey("users.id"))
-    user: Mapped[User] = relationship("User", backref="incomes")
+    user: User = relationship("User", backref="incomes")
     category_id: int = Column(ForeignKey("categories.id"))
-    category: Mapped[Category] = relationship("Category", backref="incomes")
+    category: Category = relationship("Category", backref="incomes")
