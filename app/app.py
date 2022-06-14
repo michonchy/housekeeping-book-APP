@@ -4,14 +4,11 @@ from typing import List
 import sqlalchemy as sql
 from database import DBSession
 from models.entities import BaseEntity
-from models.entities import User, Spending
+from models.entities import User, Spending, Category, Income
 
 
 def show_table(model_class_name: str):
     session = DBSession().issued()
-    spendings: List[Spending] = session.query(Spending).all()
-    for s in spendings:
-        print(s.user.__dict__)
     queried = session.query(globals()[model_class_name])
     all_model: List[BaseEntity] = queried.all()
     for model in all_model:
