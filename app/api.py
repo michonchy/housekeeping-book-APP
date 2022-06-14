@@ -12,6 +12,7 @@ from sqlalchemy.orm.session import Session as BaseSession
 from sqlalchemy.orm.query import Query
 from database import DBSession
 from models.entities import Category, Spending, User
+from flask import request
 
 Base = declarative_base()
 
@@ -40,6 +41,17 @@ def read_users():
     return jsonify({
         'code': 200,
         'data': result
+    })
+
+
+@app.route('/users', methods=['POST'])
+def create_users():
+    session = DBSession().issued()
+    user = User(name = request.form["name"])
+    session.add(user)
+    session.commit()
+    return jsonify({
+        'code': 201,
     })
 
 
