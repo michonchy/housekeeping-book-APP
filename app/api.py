@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session as BaseSession
 from sqlalchemy.orm.query import Query
 from database import DBSession
-from models.user import User
+from models.entities import User
 
 Base = declarative_base()
 

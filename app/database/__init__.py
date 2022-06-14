@@ -2,7 +2,6 @@ from sqlalchemy.engine import create_engine, Engine as DBEngine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session as BaseSession
-from sqlalchemy.orm.query import Query
 import os
 
 

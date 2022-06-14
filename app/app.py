@@ -2,21 +2,19 @@ import os
 import sys
 from typing import List
 import sqlalchemy as sql
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import (Table, Column, Integer, String)
-from sqlalchemy.ext.declarative import declarative_base
 from database import DBSession
-from models.user import User
-
-Base = declarative_base()
+from models.entities import BaseEntity
+from models.entities import User, Spending
 
 
 def show_table(model_class_name: str):
     session = DBSession().issued()
+    spendings: List[Spending] = session.query(Spending).all()
+    for s in spendings:
+        print(s.user.__dict__)
     queried = session.query(globals()[model_class_name])
-    all_model: List = queried.all()
+    all_model: List[BaseEntity] = queried.all()
     for model in all_model:
-        print("---")
         print(model.__dict__)
 
 
@@ -37,7 +35,7 @@ def execute_cli():
     if subcommand == "read":
         table_name = args[1]
         show_table(table_name)
-    elif subcommand == "read_sql":
+    elif subcommand == "sql_read":
         table_name = args[1]
         sql(f'SELECT * FROM {table_name}')
     elif subcommand == "sql":
