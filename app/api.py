@@ -2,6 +2,7 @@ import os
 from re import A
 import sqlite3
 from typing import List, TypedDict
+from unicodedata import category
 from requests import Session
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
@@ -11,7 +12,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session as BaseSession
 from sqlalchemy.orm.query import Query
 from database import DBSession
-from models.entities import Category, Spending, User
+from models.entities import Category, Income, Spending, User
 from flask import request
 
 Base = declarative_base()
@@ -75,6 +76,16 @@ def read_categories():
     })
 
 
+@app.route('/categories', methods=['POST'])
+def create_categories():
+    session = DBSession().issued()
+    category = Category(name = request.form["name"])
+    session.add(category)
+    session.commit()
+    return jsonify({
+        'code': 201,
+    })
+
 @app.route('/spendings', methods=['GET'])
 def read_spendings():
     session = DBSession().issued()
@@ -105,6 +116,36 @@ def read_spendings():
         'data': result
     })
 
+
+@app.route('/incomes', methods=['GET'])
+def read_incomes():
+    session = DBSession().issued()
+    queried: Query[Income] = session.query(Income)
+    incomes: List[Income] = queried.all()
+    UserData = TypedDict('UserData', {'id': int, 'name': str})
+    CategoryData = TypedDict('CategoryData', {'id': int, 'name': str, 'color':str})
+    ResponseData = TypedDict('SpendingResponse', {'id': int, 'amount': int, 'date': str, 'user': UserData, 'category': CategoryData})
+    result: List[ResponseData] = []
+    print(incomes)
+    for income in incomes:
+        result.append({
+            "id": income.id,
+            "amount": income.amount,
+            "date": income.date,
+            "user": {
+                "id": income.user.id,
+                "name": income.user.name
+            },
+            "category": {
+                "id": income.category.id,
+                "name": income.category.name,
+                "color": income.category.color 
+            }
+        })
+    return jsonify({
+        'code': 200,
+        'data': result
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
