@@ -44,9 +44,29 @@ def read_users():
         'data': result
     })
 
+@app.route('/users/<id>', methods=['GET'])
+def read_user(id):
+    session = DBSession().issued()
+    queried: Query[User] = session.query(User)
+    user: User = queried.filter_by(id=id).first()
+    if not user:
+        return jsonify({
+            'code': 404,
+        })
+    ResponseData = TypedDict('UserResponse', {'id': int, 'name': str})
+    result: ResponseData = {
+        "id": user.id,
+        "name": user.name
+    }
+    print(user)
+    return jsonify({
+        'code': 200,
+        'data': result
+    })
+
 
 @app.route('/users', methods=['POST'])
-def create_users():
+def create_user():
     session = DBSession().issued()
     user = User(name = request.form["name"])
     session.add(user)
@@ -54,7 +74,19 @@ def create_users():
     return jsonify({
         'code': 201,
     })
-
+@app.route('/users/<id>',methods=['DELETE'])
+def derete_user(id):
+    session = DBSession().issued()
+    found_user = session.query(User).filter_by(id=id).first()
+    if not found_user:
+        return jsonify({
+            'code': 204,
+        })
+    session.delete(found_user)
+    session.commit()
+    return jsonify({
+        'code': 200,
+    })
 
 @app.route('/categories', methods=['GET'])
 def read_categories():
@@ -76,14 +108,51 @@ def read_categories():
     })
 
 
+@app.route('/categories/<id>', methods=['GET'])
+def read_category(id):
+    session = DBSession().issued()
+    queried: Query[Category] = session.query(Category)
+    category: Category = queried.filter_by(id=id).first()
+    if not category:
+        return jsonify({
+            'code': 404,
+        })
+    ResponseData = TypedDict('categoryResponse', {'id': int, 'name': str, 'color': str})
+    result: ResponseData = {
+        "id": category.id,
+        "name": category.name,
+        "color": category.color
+    }
+    print(category)
+    return jsonify({
+        'code': 200,
+        'data': result
+    })
+
+
 @app.route('/categories', methods=['POST'])
-def create_categories():
+def create_category():
     session = DBSession().issued()
     category = Category(name = request.form["name"])
     session.add(category)
     session.commit()
     return jsonify({
         'code': 201,
+    })
+
+
+@app.route('/categories/<id>',methods=['DELETE'])
+def derete_category(id):
+    session = DBSession().issued()
+    found_category = session.query(Category).filter_by(id=id).first()
+    if not found_category:
+        return jsonify({
+            'code': 204,
+        })
+    session.delete(found_category)
+    session.commit()
+    return jsonify({
+        'code': 200,
     })
 
 @app.route('/spendings', methods=['GET'])
@@ -117,6 +186,53 @@ def read_spendings():
     })
 
 
+@app.route('/spendings/<id>', methods=['GET'])
+def read_spending(id):
+    session = DBSession().issued()
+    queried: Query[Spending] = session.query(Spending)
+    spending: Spending = queried.filter_by(id=id).first()
+    if not spending:
+        return jsonify({
+            'code': 404,
+        })
+    UserData = TypedDict('UserData', {'id': int, 'name': str})
+    CategoryData = TypedDict('CategoryData', {'id': int, 'name': str, 'color':str})
+    ResponseData = TypedDict('SpendingResponse', {'id': int, 'amount': int, 'date': str, 'user': UserData, 'category': CategoryData})
+    result: ResponseData = {
+        "id": spending.id,
+        "amount": spending.amount,
+        "date": spending.date,
+        "user": {
+            "id": spending.user.id,
+            "name": spending.user.name
+        },
+        "category": {
+            "id": spending.category.id,
+            "name": spending.category.name,
+            "color": spending.category.color 
+        }
+    }
+    print(spending)
+    return jsonify({
+        'code': 200,
+        'data': result
+    })
+
+@app.route('/spndings/<id>',methods=['DELETE'])
+def derete_spending(id):
+    session = DBSession().issued()
+    found_spending = session.query(Spending).filter_by(id=id).first()
+    if not found_spending:
+        return jsonify({
+            'code': 204,
+        })
+    session.delete(found_spending)
+    session.commit()
+    return jsonify({
+        'code': 200,
+    })
+
+
 @app.route('/incomes', methods=['GET'])
 def read_incomes():
     session = DBSession().issued()
@@ -146,6 +262,56 @@ def read_incomes():
         'code': 200,
         'data': result
     })
+
+
+@app.route('/incomes/<id>', methods=['GET'])
+def read_income(id):
+    session = DBSession().issued()
+    queried: Query[Income] = session.query(Income)
+    income: Income = queried.filter_by(id=id).first()
+    if not income:
+        return jsonify({
+            'code': 404,
+        })
+    UserData = TypedDict('UserData', {'id': int, 'name': str})
+    CategoryData = TypedDict('CategoryData', {'id': int, 'name': str, 'color':str})
+    ResponseData = TypedDict('IncomeResponse', {'id': int, 'amount': int, 'date': str, 'user': UserData, 'category': CategoryData})
+    result: ResponseData = {
+        "id": income.id,
+        "amount": income.amount,
+        "date": income.date,
+        "user": {
+            "id": income.user.id,
+            "name": income.user.name
+        },
+        "category": {
+            "id": income.category.id,
+            "name": income.category.name,
+            "color": income.category.color 
+        }
+    }
+    print(income)
+    return jsonify({
+        'code': 200,
+        'data': result
+    })
+
+
+@app.route('/incomes/<id>',methods=['DELETE'])
+def derete_sincome(id):
+    session = DBSession().issued()
+    found_income = session.query(Income).filter_by(id=id).first()
+    if not found_income:
+        return jsonify({
+            'code': 204,
+        })
+    session.delete(found_income)
+    session.commit()
+    return jsonify({
+        'code': 200,
+    })
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
