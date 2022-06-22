@@ -1,6 +1,10 @@
+import json
 import os
 import sys
 from typing import List
+from requests import request
+from requests import Request,Response
+import requests
 import sqlalchemy as sql
 from database import DBSession
 from models.entities import BaseEntity
@@ -38,7 +42,19 @@ def execute_cli():
     elif subcommand == "sql":
         query = args[1]
         sql(query)
-
+    elif subcommand == "summary":
+        response: Response = requests.get("http://127.0.0.1:5000/spendings")
+        print(response.status_code)
+        if response.status_code != 200:
+            print("Invalid Response")
+            return 
+        d = json.loads(response.content)
+        print(d["data"])
+        spending_data = d["data"]
+        summary = 0
+        for spending in spending_data:
+            summary -= spending["amount"]
+        print(summary)
 
 if __name__ == '__main__':
     execute_cli()
