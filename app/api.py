@@ -1,3 +1,4 @@
+import datetime
 import os
 from re import A
 import sqlite3
@@ -157,9 +158,26 @@ def derete_category(id):
 
 @app.route('/spendings', methods=['GET'])
 def read_spendings():
+    year = request.args.get("year")
+    month = request.args.get("month")
+    print(year,month)
     session = DBSession().issued()
     queried: Query[Spending] = session.query(Spending)
-    spendings: List[Spending] = queried.all()
+    spendings: List[Spending] = []
+    if year and month :
+        y = int(year)
+        m = int(month)
+        from_date = datetime.date(y, m, 1)
+        to_date = datetime.date(
+            y + 1 if m == 12 else y,
+            1 if m == 12 else m + 1,
+            1
+        )
+        spendings = queried.filter(
+            sqlalchemy.and_(Spending.date >= from_date,
+                Spending.date < to_date))
+    else:
+        spendings = queried.all()
     UserData = TypedDict('UserData', {'id': int, 'name': str})
     CategoryData = TypedDict('CategoryData', {'id': int, 'name': str, 'color':str})
     ResponseData = TypedDict('SpendingResponse', {'id': int, 'amount': int, 'date': str, 'user': UserData, 'category': CategoryData})
@@ -235,9 +253,25 @@ def derete_spending(id):
 
 @app.route('/incomes', methods=['GET'])
 def read_incomes():
+    year = request.args.get("year")
+    month = request.args.get("month")
     session = DBSession().issued()
     queried: Query[Income] = session.query(Income)
-    incomes: List[Income] = queried.all()
+    incomes: List[Income] = []
+    if year and month :
+        y = int(year)
+        m = int(month)
+        from_date = datetime.date(y, m, 1)
+        to_date = datetime.date(
+            y + 1 if m == 12 else y,
+            1 if m == 12 else m + 1,
+            1
+        )
+        incomes = queried.filter(
+            sqlalchemy.and_(Income.date >= from_date,
+                Income.date < to_date))
+    else:
+        incomes = queried.all()
     UserData = TypedDict('UserData', {'id': int, 'name': str})
     CategoryData = TypedDict('CategoryData', {'id': int, 'name': str, 'color':str})
     ResponseData = TypedDict('SpendingResponse', {'id': int, 'amount': int, 'date': str, 'user': UserData, 'category': CategoryData})

@@ -25,7 +25,23 @@ def sql(query: str):
     print(rows)
     for row in rows:
         print(row)
+def get_spending_data(query: str):
+    response: Response = requests.get("http://127.0.0.1:5000/spendings" + query)
+    if response.status_code != 200:
+        print("Invalid Response")
+        raise Exception("Invalid Response")
+    d = json.loads(response.content)
+    spending_data = d["data"]
+    return spending_data
 
+def get_income_data(query: str):
+    response: Response = requests.get("http://127.0.0.1:5000/incomes" + query)
+    if response.status_code != 200:
+        print("Invalid Response")
+        raise Exception("Invalid Response") 
+    d = json.loads(response.content)
+    income_data = d["data"]
+    return income_data
 
 def execute_cli():
     args = sys.argv[1:]
@@ -43,17 +59,20 @@ def execute_cli():
         query = args[1]
         sql(query)
     elif subcommand == "summary":
-        response: Response = requests.get("http://127.0.0.1:5000/spendings")
-        print(response.status_code)
-        if response.status_code != 200:
-            print("Invalid Response")
-            return 
-        d = json.loads(response.content)
-        print(d["data"])
-        spending_data = d["data"]
+        month = None
+        query = ""
+        if len(args) > 1:
+            input_date = args[1].split("/")
+            year = input_date[0]
+            month = input_date[1]
+            query = "?year=" + year + "&month=" + month
+        spending_data = get_spending_data(query)
+        income_data = get_income_data(query)
         summary = 0
         for spending in spending_data:
-            summary -= spending["amount"]
+             summary -= spending["amount"]
+        for income in income_data:
+            summary += income["amount"]
         print(summary)
 
 if __name__ == '__main__':
