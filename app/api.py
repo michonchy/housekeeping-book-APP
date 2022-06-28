@@ -1,5 +1,7 @@
+from crypt import methods
 import datetime
 import os
+from pickle import PUT
 from re import A
 import sqlite3
 from typing import List, TypedDict
@@ -75,8 +77,26 @@ def create_user():
     return jsonify({
         'code': 201,
     })
+
+
+@app.route('/users/<id>',methods=['PUT'])
+def put_user(id):
+    session = DBSession().issued()
+    queried: Query[User] = session.query(User)
+    user: User = queried.filter_by(id=id).first()
+    if not user:
+        return jsonify({
+            'code': 404,
+        })
+    if "name" in request.form:
+        user.name = request.form["name"]
+    session.commit()
+    return jsonify({
+        'code': 200,
+    })
+
 @app.route('/users/<id>',methods=['DELETE'])
-def derete_user(id):
+def delete_user(id):
     session = DBSession().issued()
     found_user = session.query(User).filter_by(id=id).first()
     if not found_user:
