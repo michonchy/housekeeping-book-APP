@@ -1,5 +1,6 @@
 from crypt import methods
 import datetime
+from inspect import formatargvalues
 import os
 from pickle import PUT
 from re import A
@@ -22,6 +23,19 @@ Base = declarative_base()
 
 app = Flask(__name__)
 
+def is_valid_date(date_str):
+    try:
+        datetime.datetime.strptime(date_str,'%Y-%m-%d')
+        return True
+    except:
+        return False
+
+def check_amount(obj):
+    try:
+        int(obj)
+        return True
+    except:
+        return False
 
 @app.route('/')
 def hello():
@@ -161,6 +175,23 @@ def create_category():
         'code': 201,
     })
 
+@app.route('/categories/<id>',methods=['PUT'])
+def put_category(id):
+    session = DBSession().issued()
+    queried: Query[Category] = session.query(Category)
+    category: Category = queried.filter_by(id=id).first()
+    if not category:
+        return jsonify({
+            'code': 404,
+        })
+    if "name" in request.form:
+        category.name = request.form["name"]
+    if "color" in request.form:
+        category.color = request.form["color"]
+    session.commit()
+    return jsonify({
+        'code': 200,
+    })
 
 @app.route('/categories/<id>',methods=['DELETE'])
 def derete_category(id):
@@ -254,6 +285,34 @@ def read_spending(id):
     return jsonify({
         'code': 200,
         'data': result
+    })
+
+@app.route('/spendings/<id>',methods=['PUT'])
+def put_spending(id):
+    session = DBSession().issued()
+    queried: Query[Spending] = session.query(Spending)
+    spending: Spending = queried.filter_by(id=id).first()
+    if not spending:
+        return jsonify({
+            'code': 404,
+        })
+    if "amount" in request.form:
+        input_amount = request.form["amount"]
+        if not check_amount(input_amount):
+            return jsonify({
+            'code': 400,
+            })
+        spending.amount = int(input_amount)
+    if "date" in request.form:
+        input_date = request.form["date"]
+        if not is_valid_date(input_date):
+            return jsonify({
+            'code': 400,
+            })
+        spending.date = input_date   
+    session.commit()
+    return jsonify({
+        'code': 200,
     })
 
 @app.route('/spndings/<id>',methods=['DELETE'])
