@@ -410,6 +410,34 @@ def read_income(id):
     })
 
 
+@app.route('/incomes/<id>',methods=['PUT'])
+def put_income(id):
+    session = DBSession().issued()
+    queried: Query[Income] = session.query(Income)
+    income: Income = queried.filter_by(id=id).first()
+    if not income:
+        return jsonify({
+            'code': 404,
+        })
+    if "amount" in request.form:
+        input_amount = request.form["amount"]
+        if not check_amount(input_amount):
+            return jsonify({
+            'code': 400,
+            })
+        income.amount = int(input_amount)
+    if "date" in request.form:
+        input_date = request.form["date"]
+        if not is_valid_date(input_date):
+            return jsonify({
+            'code': 400,
+            })
+        income.date = input_date   
+    session.commit()
+    return jsonify({
+        'code': 200,
+    })
+    
 @app.route('/incomes/<id>',methods=['DELETE'])
 def derete_sincome(id):
     session = DBSession().issued()
