@@ -9,6 +9,7 @@ users {
 categories {
     INTEGER id
     TEXT name
+    TEXT color
 }
 
 spendings {
